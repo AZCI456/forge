@@ -13,7 +13,7 @@ std::vector<Task> create_plan(const FolderState& state) {
 	Task compile_task;
     compile_task.name = "compile";
     compile_task.command = "clang++ -std=c++17 " + state.op_sol.string() + " -o " + state.op_sol.stem().string();
-    std::cout << compile_task.command << "\n\n\n";
+    //std::cout << compile_task.command << "\n\n\n";
 	// Add it to the plan
     plan.push_back(compile_task);
 
@@ -22,7 +22,7 @@ std::vector<Task> create_plan(const FolderState& state) {
         Task run_task;
         
         // eg "test1.in"
-        run_task.name = "test_" + input_path.filename().string();
+        run_task.name = input_path.filename().string();
 
         // Dependencies: It cannot start until "compile" is done.
         run_task.dependencies.push_back("compile");
@@ -35,8 +35,16 @@ std::vector<Task> create_plan(const FolderState& state) {
         // terminal command
         // eg. "./sol < tests1.in > tests1.out"
         run_task.command = "./sol < " + input_path.string() + " > " + output_path.string();
+        // if answer exists 
+        if ( state.valid_sols.count(input_path)){
+            // separate later to determine compile or runtime error
+            run_task.command += "&& diff -y " +  output_path.string() + " " + state.valid_sols.at(input_path).string() + " | colordiff";
+        } 
+        std::cout << run_task.command << "\n\n\n";
 
         plan.push_back(run_task);
+
+
     }
 
     return plan;

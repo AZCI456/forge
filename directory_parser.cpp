@@ -16,7 +16,7 @@ namespace fs = std::filesystem; // alias for brevity
 #define SOLUTION_NAME "sol.cpp" // include .cpp
 #define BRUTE_NAME "bf.cpp" 
 #define TEST_EXT ".in" 
-#define VSOL_EXT ".in" 
+#define VSOL_EXT ".ans" 
 
 // understand better then implement - supposedly more efficent
 // inline constexpr std::string_view SOLUTION_NAME = "sol.cpp";
@@ -45,12 +45,15 @@ void parse_file(fs::path file_path, FolderState & folderState){
 
 	if (ext == TEST_EXT){
 		folderState.tests.push_back(file_path);
+		// see if solution file given as well
+		fs::path ans_file = fs::path(file_path).replace_extension(VSOL_EXT);
+		//std::cout << ans_file << "\n\n";
+		if (fs::exists(ans_file)){
+			//std::cout << ans_file << "Exists" << "\n\n\n";
+			folderState.valid_sols.insert({file_path, ans_file});
+		} 
+
 		return;
-	} 
-	else if (ext == VSOL_EXT){
-		fs::path original_path = file_path.replace_extension(TEST_EXT);
-		// if this is valid input add to state manager
-		if (fs::exists(original_path)) folderState.valid_sols.insert({original_path, file_path});
 	} 
 
 	// reaches this point then invalid file

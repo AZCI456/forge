@@ -9,7 +9,7 @@ bool run_program(const std::vector<Task> & tasks){
 
 	for (Task task: tasks){
 
-		if(std::system(task.command.c_str())) ; // function requires c style string
+		if(std::system(task.command.c_str())) return false; // function requires c style string
 		else std::cout << task.name << " SUCCESSFULLY EXECUTED\n";
 		
 	}
