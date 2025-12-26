@@ -7,15 +7,16 @@
 #include <string>
 
 // for the FolderState Struct
-#include "Types.h"
+#include "types.h"
 
 namespace fs = std::filesystem; // alias for brevity
 
 
 // put whatever you call you main coding file here
 #define SOLUTION_NAME "sol.cpp" // include .cpp
-#define BRUTE_NAME "bf.cpp" 
-#define TEST_EXT ".in" 
+#define BRUTE_NAME "bf.cpp"
+#define GENERATOR_NAME "gen.cpp"
+#define TEST_EXT ".in"
 #define VSOL_EXT ".ans" 
 
 // understand better then implement - supposedly more efficent
@@ -32,13 +33,17 @@ void parse_file(fs::path file_path, FolderState & folderState){
 
 	// lazy evalution if solution file
 	if (filename == SOLUTION_NAME) {
-		folderState.op_sol = file_path; 
+		folderState.sol_path = file_path;
 		return;
 	}
 	else if (filename == BRUTE_NAME){
-		folderState.bf_sol = file_path;
+		folderState.bf_path = file_path;
 		return;
-	} 
+	}
+	else if (filename == GENERATOR_NAME) {
+		folderState.generator_path = file_path;
+		return;
+	}
 	
 	// then test solution
 	const auto ext = file_path.extension();
@@ -78,8 +83,8 @@ FolderState parse_directory(const fs::path & current_directory){
     }
 
     std::cout << "[FORGE] Project Scan Complete:\n";
-    std::cout << "  Solution: " << folderState.op_sol.filename() << "\n";
-    std::cout << "  BF Approach: " << (folderState.bf_sol.empty() ? "N":"Y") << "\n";
+    std::cout << "  Solution: " << folderState.sol_path.filename() << "\n";
+    std::cout << "  BF Approach: " << (folderState.bf_path.empty() ? "N":"Y") << "\n";
     // GENERATOR FEATURE STUB
     //std::cout << "  Generator: " << (folderState.generator_path.empty() ? "None" : "Found") << "\n";
     std::cout << "  Manual Tests: " << folderState.tests.size() << " found.\n";

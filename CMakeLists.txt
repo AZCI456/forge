@@ -10,4 +10,5 @@ add_executable(forge
         executor.cpp
         Types.h
         ForgeFunct.h
+        colours.h
 )

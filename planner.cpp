@@ -1,4 +1,4 @@
-#include "Types.h"
+#include "types.h"
 #include <iostream>
 
 // function constructs a dependency matrix on the compile task.
@@ -12,7 +12,7 @@ std::vector<Task> create_plan(const FolderState& state) {
 	// the root of all tasks - compiling the program
 	Task compile_task;
     compile_task.name = "compile";
-    compile_task.command = "clang++ -std=c++17 " + state.op_sol.string() + " -o " + state.op_sol.stem().string();
+    compile_task.command = "clang++ -std=c++17 " + state.sol_path.string() + " -o " + state.sol_path.stem().string();
     //std::cout << compile_task.command << "\n\n\n";
 	// Add it to the plan
     plan.push_back(compile_task);
@@ -38,9 +38,10 @@ std::vector<Task> create_plan(const FolderState& state) {
         // if answer exists 
         if ( state.valid_sols.count(input_path)){
             // separate later to determine compile or runtime error
-            run_task.command += "&& diff -y " +  output_path.string() + " " + state.valid_sols.at(input_path).string() + " | colordiff";
+            // note: change to diff if homebrew install colordiff not working
+            run_task.command += "&& colordiff -y " +  output_path.string() + " " + state.valid_sols.at(input_path).string();
         } 
-        std::cout << run_task.command << "\n\n\n";
+
 
         plan.push_back(run_task);
 

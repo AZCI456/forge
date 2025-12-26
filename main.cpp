@@ -1,4 +1,4 @@
-#include "Types.h"
+#include "types.h"
 #include "ForgeFunct.h"
 #include <iostream>
 #include <filesystem>
@@ -8,7 +8,7 @@
 int main() {
     auto state = parse_directory(".");
     if (state.valid_build()) {
-        std::cout << "Success!" << std::endl;
+        std::cout << "Success!" << "\n\n";
     }
     else return -1;
 
