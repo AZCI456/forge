@@ -39,6 +39,7 @@ std::vector<Task> create_plan(const FolderState& state) {
         if ( state.valid_sols.count(input_path)){
             // separate later to determine compile or runtime error
             // note: change to diff if homebrew install colordiff not working
+            // write to the file so that we know whether the case passed before producing the output
             run_task.command += "&& colordiff -y " +  output_path.string() + " " + state.valid_sols.at(input_path).string();
         } 
 

@@ -8,7 +8,7 @@
 // Mersenne Twister algorithm - seeded by the system clock
 std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
 
-// Helper function: gives a random integer between [min, max] inclusive
+// Helper function for a random integer - inclusive
 long long rand_int(long long min, long long max) {
     return std::uniform_int_distribution<long long>(min, max)(rng);
 }
@@ -26,9 +26,9 @@ int main(int argc, char* argv[]) {
     std::cout << n << "\n";
 
     // 2. change based on question
-    for (int i = 0; i < N; ++i) {
-        long long v1 = rand_int(-1000, 1000);
-        long long v2 = rand_int(-1000, 1000);
+    for (int i = 0; i < n; ++i) {
+        long long x = rand_int(-1000, 1000);
+        long long y = rand_int(-1000, 1000);
         
         std::cout << x << " " << y << "\n";
     }

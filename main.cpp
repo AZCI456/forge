@@ -1,16 +1,18 @@
 #include "types.h"
 #include "ForgeFunct.h"
+#include "colours.h"
 #include <iostream>
 #include <filesystem>
 
-// Declaration of the function in directory_parser.cpp
-
-int main() {
+// 1 for program success and -1 for failure
+int run_manual_build() {
     auto state = parse_directory(".");
     if (state.valid_build()) {
         std::cout << "Success!" << "\n\n";
     }
-    else return -1;
+    else {
+        return -1;
+    }
 
     std::vector<Task> tasks = create_plan(state);
 
@@ -30,7 +32,52 @@ int main() {
         std::cout << "AT LEAST ONE TASK FAILED... ABORTING!\n";
         return -1;
     }
-    
+    return 1;
+}
+
+// should we implement namespaces for the colours COLOUR::CYAN
+int print_help() {
+
+    std::cout << CYAN << "Forge - Competitive Programming Tool" << RESET << "\n";
+    std::cout << "Usage:\n";
+    std::cout << "  forge test       Run all local .in/.out test cases\n";
+    std::cout << "  forge stress     Run the generator stress tester (gen/brute/sol)\n";
+    std::cout << "  forge help       Show this help message\n";
+
+    return 0;
+};
+
+int run_stress() {
+    // this segment can be abstracted into the create plan function to avoid repetition
+    auto state = parse_directory(".");
+    if (state.valid_build()) {
+        std::cout << "Success!" << "\n\n";
+    }
+    else {
+        return -1;
+    }
+    //
+    std::vector<Task> tasks = create_plan(state);
+
+    return 0;
+};
+
+int main(int argc, char** argv) {
+
+    if (argc < 2) {
+        print_help();
+        return 0;
+    }
+
+    std::string command = argv[1];
+    if (command == "help" | command == "--help" || command == "-h") print_help();
+    else if (command == "test") return run_manual_build();
+    else if (command == "stress") return run_stress();
+    else {
+        std::cout << "Invalid command \"" << command << "\"\n\n";
+        std::cout << "Try \"forge help\" \n\n";
+    }
+
 
     return 0;
 }
