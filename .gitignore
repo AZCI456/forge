@@ -1,0 +1,6 @@
+gen_tests
+
+.vscode
+
+*.out
+*.ans
