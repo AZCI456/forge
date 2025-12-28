@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream>
-#include "types.h"
-#include "colours.h"
+#include "Types.h"
+#include "Colours.h"
 #include <filesystem>
 
 

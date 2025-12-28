@@ -1,46 +1,28 @@
-// compile testing 
-// clang++ directory_parser.cpp -o directory_parser -std=gnu++17 && ./directory_parser
-
 #include <iostream>
 #include <filesystem>
 #include <vector>
 #include <string>
 
-// for the FolderState Struct
-#include "types.h"
+#include "Types.h"
+#include "Constants.h"
 
 namespace fs = std::filesystem; // alias for brevity
 
 
-// put whatever you call you main coding file here
-#define SOLUTION_NAME "sol.cpp" // include .cpp
-#define BRUTE_NAME "bf.cpp"
-#define GENERATOR_NAME "gen.cpp"
-#define TEST_EXT ".in"
-#define VSOL_EXT ".ans" 
-
-// understand better then implement - supposedly more efficent
-// inline constexpr std::string_view SOLUTION_NAME = "sol.cpp";
-// inline constexpr std::string_view BRUTE_NAME    = "bf.cpp";
-// inline constexpr std::string_view TEST_EXT      = ".in";
-// inline constexpr std::string_view VSOL_EXT      = ".in";
-
-
-// optimisation: remove string conversions in directory parser to avoid unnessary heap allocation
 void parse_file(fs::path file_path, FolderState & folderState){
 
 	const auto filename = file_path.filename();
 
 	// lazy evalution if solution file
-	if (filename == SOLUTION_NAME) {
+	if (filename == config::SOLUTION_NAME) {
 		folderState.sol_path = file_path;
 		return;
 	}
-	else if (filename == BRUTE_NAME){
+	else if (filename == config::BRUTE_NAME){
 		folderState.bf_path = file_path;
 		return;
 	}
-	else if (filename == GENERATOR_NAME) {
+	else if (filename != config::GENERATOR_NAME) {
 		folderState.generator_path = file_path;
 		return;
 	}
@@ -48,10 +30,11 @@ void parse_file(fs::path file_path, FolderState & folderState){
 	// then test solution
 	const auto ext = file_path.extension();
 
-	if (ext == TEST_EXT){
+	if (ext == config::TEST_EXT){
 		folderState.tests.push_back(file_path);
 		// see if solution file given as well
-		fs::path ans_file = fs::path(file_path).replace_extension(VSOL_EXT);
+		fs::path ans_file = fs::path(file_path).replace_extension(config::
+			VSOL_EXT);
 		//std::cout << ans_file << "\n\n";
 		if (fs::exists(ans_file)){
 			//std::cout << ans_file << "Exists" << "\n\n\n";
@@ -76,7 +59,7 @@ FolderState parse_directory(const fs::path & current_directory){
 
 	// check if successful
 	if (!folderState.valid_build()) {
-        std::cerr << "[ERROR] " << SOLUTION_NAME << " file not found\n";
+        std::cerr << "[ERROR] " << config::SOLUTION_NAME << " file not found\n";
         // build failed 
         //#warning ensure this is caught in the main function yes
         return folderState;
@@ -86,7 +69,7 @@ FolderState parse_directory(const fs::path & current_directory){
     std::cout << "  Solution: " << folderState.sol_path.filename() << "\n";
     std::cout << "  BF Approach: " << (folderState.bf_path.empty() ? "N":"Y") << "\n";
     // GENERATOR FEATURE STUB
-    //std::cout << "  Generator: " << (folderState.generator_path.empty() ? "None" : "Found") << "\n";
+    std::cout << "  Generator: " << (folderState.generator_path.empty() ? "N" : "Y") << "\n";
     std::cout << "  Manual Tests: " << folderState.tests.size() << " found.\n";
 
     return folderState;

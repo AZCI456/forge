@@ -8,7 +8,10 @@ add_executable(forge
         directory_parser.cpp
         planner.cpp
         executor.cpp
-        Types.h
+        types.h
         ForgeFunct.h
         colours.h
+        Constants.h
+        GeneratorTools.cpp
+        GeneratorTools.h
 )

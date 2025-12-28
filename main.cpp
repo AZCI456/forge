@@ -1,8 +1,12 @@
-#include "types.h"
-#include "ForgeFunct.h"
-#include "colours.h"
 #include <iostream>
 #include <filesystem>
+
+#include "Types.h"
+#include "ForgeFunct.h"
+#include "Colours.h"
+#include "Constants.h"
+#include "GeneratorTools.h"
+
 
 // 1 for program success and -1 for failure
 int run_manual_build() {
@@ -11,6 +15,7 @@ int run_manual_build() {
         std::cout << "Success!" << "\n\n";
     }
     else {
+        std::cout << RED << "CANNOT BUILD - ONE OF THE ABOVE FILES MISSING" << RESET << "\n";
         return -1;
     }
 
@@ -32,7 +37,7 @@ int run_manual_build() {
         std::cout << "AT LEAST ONE TASK FAILED... ABORTING!\n";
         return -1;
     }
-    return 1;
+    return 0;
 }
 
 // should we implement namespaces for the colours COLOUR::CYAN
@@ -47,17 +52,30 @@ int print_help() {
     return 0;
 };
 
+// maybe put in the state struct or promote to class
+
+
 int run_stress() {
     // this segment can be abstracted into the create plan function to avoid repetition
     auto state = parse_directory(".");
-    if (state.valid_build()) {
+    if (state.valid_stress()) {
         std::cout << "Success!" << "\n\n";
     }
     else {
+        // make it so the missing file is highlighted
+        std::cout << RED << "CANNOT BUILD - ONE OF THE ABOVE FILES MISSING" << RESET << "\n";
         return -1;
     }
     //
     std::vector<Task> tasks = create_plan(state);
+
+    gen_tests();
+
+    if (run_program(tasks)) std::cout << "ALL TASKS SUCCESSFULLY COMPILED\n\n";
+    else {
+        std::cout << "AT LEAST ONE TASK FAILED... ABORTING!\n";
+        return -1;
+    }
 
     return 0;
 };
