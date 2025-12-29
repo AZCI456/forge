@@ -19,7 +19,7 @@ bool run_program(const std::vector<Task> & tasks){
 
 
 		// print the task name
-		std::cout << task.name << "...";
+		std::cout << "TESTING: " << task.name << "...";
 
 		// then the result
 		// implementation note - break early so that when many test cases can see where failed

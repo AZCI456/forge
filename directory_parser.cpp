@@ -9,7 +9,7 @@
 namespace fs = std::filesystem; // alias for brevity
 
 
-void parse_file(fs::path file_path, FolderState & folderState){
+void parse_file(const fs::path& file_path, FolderState & folderState){
 
 	const auto filename = file_path.filename();
 
@@ -22,12 +22,12 @@ void parse_file(fs::path file_path, FolderState & folderState){
 		folderState.bf_path = file_path;
 		return;
 	}
-	else if (filename != config::GENERATOR_NAME) {
+	else if (filename == config::GENERATOR_NAME) {
 		folderState.generator_path = file_path;
 		return;
 	}
 	
-	// then test solution
+	// if here test solutions
 	const auto ext = file_path.extension();
 
 	if (ext == config::TEST_EXT){
@@ -59,8 +59,9 @@ FolderState parse_directory(const fs::path & current_directory){
 
 	// check if successful
 	if (!folderState.valid_build()) {
-        std::cerr << "[ERROR] " << config::SOLUTION_NAME << " file not found\n";
-        // build failed 
+        // std::cerr << "[ERROR] " << config::SOLUTION_NAME << " file not found\n";
+        std::cerr << "[ERROR] one of the files missing:  SOLUTION, TEST, ANSWERS\n";
+        // build failed
         //#warning ensure this is caught in the main function yes
         return folderState;
     }

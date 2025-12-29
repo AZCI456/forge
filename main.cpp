@@ -32,7 +32,7 @@ int run_manual_build() {
     //     std::cout << "\n ------------- \n";
     // }
 
-    if (run_program(tasks)) std::cout << "ALL TASKS SUCCESSFULLY COMPILED\n\n";
+    if (run_program(tasks)) std::cout << "ALL TASKS SUCCESSFULLY COMPLETED\n\n";
     else {
         std::cout << "AT LEAST ONE TASK FAILED... ABORTING!\n";
         return -1;
@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
     }
 
     std::string command = argv[1];
-    if (command == "help" | command == "--help" || command == "-h") print_help();
+    if (command == "help" || command == "--help" || command == "-h") print_help();
     else if (command == "test") return run_manual_build();
     else if (command == "stress") return run_stress();
     else {

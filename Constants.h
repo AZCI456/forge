@@ -11,7 +11,7 @@ namespace config {
     constexpr std::string_view BRUTE_NAME = "bf.cpp";
     constexpr std::string_view GENERATOR_NAME= "gen.cpp";
     constexpr std::string_view TEST_EXT      = ".in";
-    constexpr std::string_view VSOL_EXT      = ".ans";
+    constexpr std::string_view VSOL_EXT      = ".out";
 
     constexpr int GEN_SIZE = 1000; // number of files to generate with gen.cpp
 
