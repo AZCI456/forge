@@ -3,15 +3,12 @@ project(forge)
 
 set(CMAKE_CXX_STANDARD 17)
 
+include_directories(include)
+
 add_executable(forge
-        main.cpp
-        directory_parser.cpp
-        planner.cpp
-        executor.cpp
-        types.h
-        ForgeFunct.h
-        colours.h
-        Constants.h
-        GeneratorTools.cpp
-        GeneratorTools.h
+        src/main.cpp
+        src/directory_parser.cpp
+        src/planner.cpp
+        src/executor.cpp
+        src/GeneratorTools.cpp
 )
