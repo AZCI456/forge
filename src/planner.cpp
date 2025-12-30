@@ -29,7 +29,8 @@ std::vector<Task> create_plan(const FolderState& state) {
 
         // output filename:
         // eg "tests1.out"
-        fs::path output_path = input_path;
+        fs::path output_path(input_path); // copy constructor
+        output_path.replace_filename("s_"+output_path.filename().string()); // s_ for sol generated - doesnt overwrite the provided files
         output_path.replace_extension(".out");
 
         // terminal command
@@ -40,8 +41,9 @@ std::vector<Task> create_plan(const FolderState& state) {
             // separate later to determine compile or runtime error
             // note: change to diff if homebrew install colordiff not working
             // write to the file so that we know whether the case passed before producing the output
-            run_task.command += "&& colordiff -y " +  output_path.string() + " " + state.valid_sols.at(input_path).string();
-        } 
+            run_task.command += " && colordiff -y " +  output_path.string() + " " + state.valid_sols.at(input_path).string();
+            std::cout << run_task.command << std::endl;
+        }
 
 
         plan.push_back(run_task);

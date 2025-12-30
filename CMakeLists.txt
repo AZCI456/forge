@@ -10,5 +10,5 @@ add_executable(forge
         src/directory_parser.cpp
         src/planner.cpp
         src/executor.cpp
-        src/GeneratorTools.cpp
+        src/utils/GeneratorTools.cpp
 )
