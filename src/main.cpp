@@ -66,18 +66,9 @@ int run_stress() {
         std::cout << RED << "CANNOT BUILD - ONE OF THE ABOVE FILES MISSING" << RESET << "\n";
         return -1;
     }
-    //
-    std::vector<Task> tasks = create_plan(state);
-
-    gen_tests();
-
-    if (run_program(tasks)) std::cout << "ALL TASKS SUCCESSFULLY COMPILED\n\n";
-    else {
-        std::cout << "AT LEAST ONE TASK FAILED... ABORTING!\n";
-        return -1;
-    }
-
-    return 0;
+    
+    // Run fuzzer: generates and tests incrementally, breaks on first failure
+    return run_fuzzer(state);
 };
 
 int main(int argc, char** argv) {

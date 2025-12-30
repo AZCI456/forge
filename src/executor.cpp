@@ -13,22 +13,24 @@ bool run_program(const std::vector<Task> & tasks){
 
 	std::cout << "COMPILING [TASKS]..." << '\n';
 
-
+	bool all_passed = true;
 	for (Task task: tasks){
-
-
 
 		// print the task name
 		std::cout << "TESTING: " << task.name << "...";
 
 		// then the result
-		// implementation note - break early so that when many test cases can see where failed
-		if(std::system(task.command.c_str())) std::cout  << RED << "[FAILED]\n\n" << RESET; // function requires c style string
-		else std::cout << GREEN << "[SUCCESSFUL]\n\n" << RESET;
+		if(std::system(task.command.c_str())) {
+			std::cout << RED << "[FAILED]\n\n" << RESET;
+			all_passed = false;
+		}
+		else {
+			std::cout << GREEN << "[SUCCESSFUL]\n\n" << RESET;
+		}
 
 		// print to the terminal the output
 		//std::system("cat diff.tmp");
 	}
-	return true;
+	return all_passed;
 
 }

@@ -38,11 +38,11 @@ std::vector<Task> create_plan(const FolderState& state) {
         run_task.command = "./sol < " + input_path.string() + " > " + output_path.string();
         // if answer exists 
         if ( state.valid_sols.count(input_path)){
-            // separate later to determine compile or runtime error
-            // note: change to diff if homebrew install colordiff not working
-            // write to the file so that we know whether the case passed before producing the output
-            run_task.command += " && colordiff -y " +  output_path.string() + " " + state.valid_sols.at(input_path).string();
-            std::cout << run_task.command << std::endl;
+            // Run diff to compare outputs
+            // First try colordiff, fallback to regular diff if not available
+            // Show the diff output (using || true to always show it), then check if files are identical
+            std::string expected_output = state.valid_sols.at(input_path).string();
+            run_task.command += " && (colordiff -y " + output_path.string() + " " + expected_output + " 2>/dev/null || diff -y " + output_path.string() + " " + expected_output + " || true) && diff -q " + output_path.string() + " " + expected_output + " > /dev/null 2>&1";
         }
 
 
