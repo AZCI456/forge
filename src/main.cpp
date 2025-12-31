@@ -1,11 +1,15 @@
 #include <iostream>
 #include <filesystem>
+#include <fstream>
+#include <cstdlib>
 
 #include "Types.h"
 #include "ForgeFunct.h"
 #include "Colours.h"
 #include "Constants.h"
 #include "GeneratorTools.h"
+
+namespace fs = std::filesystem;
 
 
 // 1 for program success and -1 for failure
@@ -47,6 +51,7 @@ int print_help() {
     std::cout << "Usage:\n";
     std::cout << "  forge test       Run all local .in/.out test cases\n";
     std::cout << "  forge stress     Run the generator stress tester (gen/brute/sol)\n";
+    std::cout << "  forge setup <dir> Create a new project directory with sol.cpp\n";
     std::cout << "  forge help       Show this help message\n";
 
     return 0;
@@ -71,6 +76,63 @@ int run_stress() {
     return run_fuzzer(state);
 };
 
+
+int setup_project(const char* dir_name) {
+    // Check if directory name was provided
+    if (dir_name == nullptr || std::string(dir_name).empty()) {
+        std::cout << RED << "Error: Please provide a directory name" << RESET << "\n";
+        std::cout << "Usage: forge setup <directory_name>\n";
+        return -1;
+    }
+    
+    fs::path project_dir(dir_name);
+    
+    // Check if directory already exists
+    if (fs::exists(project_dir)) {
+        std::cout << RED << "Error: Directory \"" << dir_name << "\" already exists" << RESET << "\n";
+        return -1;
+    }
+    
+    // Create directory
+    try {
+        fs::create_directory(project_dir);
+        std::cout << GREEN << "Created directory: " << dir_name << RESET << "\n";
+    } catch (const fs::filesystem_error& e) {
+        std::cout << RED << "Error creating directory: " << e.what() << RESET << "\n";
+        return -1;
+    }
+    
+    // Create sol.cpp file
+    fs::path sol_file = project_dir / config::SOLUTION_NAME;
+
+    // create the file  - check the ofstream initalisaiton was successful
+    std::ofstream file(sol_file);
+    if (!file.is_open()) {
+        std::cout << RED << "Error: Could not create " << config::SOLUTION_NAME << RESET << "\n";
+        return -1;
+    }
+    std::cout << GREEN << "Created file: " << sol_file.string() << RESET << "\n";
+
+
+    // use the editor to open the file
+    std::string open_cmd = std::string(config::EDITOR) + " " + sol_file.string();
+    std::cout << CYAN << "Opening " << sol_file.string() << " in " << config::EDITOR << "..." << RESET << "\n";
+    if(std::system(open_cmd.c_str())) {
+        std::cout << RED << "Error: failure with the editor command " << config::EDITOR << " " << sol_file.string() << RESET << "\n";
+        std::cout <<  "Hint: Check Constants.h" << "\n";
+        return -1;
+    }
+
+
+    // misc info
+    std::cout << GREEN << "\nProject setup complete!" << RESET << "\n";
+    std::cout << "  Directory: " << fs::absolute(project_dir).string() << "\n";
+    std::cout << "  Solution: " << sol_file.string() << "\n";
+    std::cout << "\nTo get started, run: cd " << dir_name << "\n";
+    
+    return 0;
+}
+
 int main(int argc, char** argv) {
 
     if (argc < 2) {
@@ -82,6 +144,15 @@ int main(int argc, char** argv) {
     if (command == "help" || command == "--help" || command == "-h") print_help();
     else if (command == "test") return run_manual_build();
     else if (command == "stress") return run_stress();
+    else if (command == "setup") {
+        if (argc < 3) {
+            std::cout << RED << "Error: Please provide a directory name" << RESET << "\n";
+            std::cout << "Usage: forge setup <directory_name>\n";
+            return -1;
+        }
+        return setup_project(argv[2]);
+    }
+ //   else if (command == "genfile") return run_stress(); potential feature rn snippet templates just easier
     else {
         std::cout << "Invalid command \"" << command << "\"\n\n";
         std::cout << "Try \"forge help\" \n\n";

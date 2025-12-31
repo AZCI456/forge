@@ -13,6 +13,8 @@ namespace config {
     constexpr std::string_view TEST_EXT      = ".in";
     constexpr std::string_view VSOL_EXT      = ".out";
 
+    constexpr std::string_view EDITOR      = "subl"; // shortcut I set up for sublime - use "code" for visual studio
+
     constexpr int GEN_SIZE = 1000; // number of files to generate with gen.cpp
 
     /**
