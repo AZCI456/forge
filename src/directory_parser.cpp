@@ -48,6 +48,8 @@ void parse_file(const fs::path& file_path, FolderState & folderState){
 
 }
 
+
+// check if successful in the main calling function
 FolderState parse_directory(const fs::path & current_directory){
 
 	FolderState folderState;
@@ -58,13 +60,7 @@ FolderState parse_directory(const fs::path & current_directory){
 	}
 
 	// check if successful
-	if (!folderState.valid_build()) {
-        // std::cerr << "[ERROR] " << config::SOLUTION_NAME << " file not found\n";
-        std::cerr << "[ERROR] one of the files missing:  SOLUTION, TEST, ANSWERS\n";
-        // build failed
-        //#warning ensure this is caught in the main function yes
-        return folderState;
-    }
+
 
     std::cout << "[FORGE] Project Scan Complete:\n";
     std::cout << "  Solution: " << folderState.sol_path.filename() << "\n";

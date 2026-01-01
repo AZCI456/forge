@@ -19,7 +19,7 @@ int run_manual_build() {
         std::cout << "Success!" << "\n\n";
     }
     else {
-        std::cout << RED << "CANNOT BUILD - ONE OF THE ABOVE FILES MISSING" << RESET << "\n";
+        std::cout << RED << "CANNOT BUILD - ONE OF THE FOLLOWING FILES MISSING: SOL, TEST, ANS" << RESET << "\n";
         return -1;
     }
 
@@ -68,7 +68,7 @@ int run_stress() {
     }
     else {
         // make it so the missing file is highlighted
-        std::cout << RED << "CANNOT BUILD - ONE OF THE ABOVE FILES MISSING" << RESET << "\n";
+        std::cout << RED << "CANNOT BUILD - ONE OF THE FOLLOWING FILES MISSING: SOL, GEN, BF" << RESET << "\n";
         return -1;
     }
     
