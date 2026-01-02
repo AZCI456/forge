@@ -8,6 +8,8 @@
 #include "Colours.h"
 #include "Constants.h"
 #include "GeneratorTools.h"
+#include "InputTools.h"
+
 
 namespace fs = std::filesystem;
 
@@ -52,6 +54,9 @@ int print_help() {
     std::cout << "  forge test       Run all local .in/.out test cases\n";
     std::cout << "  forge stress     Run the generator stress tester (gen/brute/sol)\n";
     std::cout << "  forge setup <dir> Create a new project directory with sol.cpp\n";
+    std::cout << "  forge in <p>  Create sample input/output files quickly\n";
+    std::cout << "                    p <optional> if you want enter to move to next section\n";
+
     std::cout << "  forge help       Show this help message\n";
 
     return 0;
@@ -133,6 +138,7 @@ int setup_project(const char* dir_name) {
     return 0;
 }
 
+
 int main(int argc, char** argv) {
 
     if (argc < 2) {
@@ -144,6 +150,12 @@ int main(int argc, char** argv) {
     if (command == "help" || command == "--help" || command == "-h") print_help();
     else if (command == "test") return run_manual_build();
     else if (command == "stress") return run_stress();
+    else if (command == "in") {
+        if (argc >= 3) {
+            return handle_input_tests(true); // Third argument present, use copy_paste mode
+        }
+        return handle_input_tests(false); // No third argument, use Enter key mode
+    }
     else if (command == "setup") {
         if (argc < 3) {
             std::cout << RED << "Error: Please provide a directory name" << RESET << "\n";

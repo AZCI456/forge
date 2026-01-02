@@ -11,4 +11,6 @@ add_executable(forge
         src/planner.cpp
         src/executor.cpp
         src/utils/GeneratorTools.cpp
+        src/utils/InputTools.cpp
+        include/InputTools.h
 )
