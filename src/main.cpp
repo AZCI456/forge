@@ -159,7 +159,6 @@ int main(int argc, char** argv) {
         }
         return setup_project(argv[2]);
     }
- //   else if (command == "genfile") return run_stress(); potential feature rn snippet templates just easier
 
     else {
         std::cout << "Invalid command \"" << command << "\"\n\n";

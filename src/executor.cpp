@@ -28,8 +28,6 @@ bool run_program(const std::vector<Task> & tasks){
 			std::cout << GREEN << "[SUCCESSFUL]\n\n" << RESET;
 		}
 
-		// print to the terminal the output
-		//std::system("cat diff.tmp");
 	}
 	return all_passed;
 
