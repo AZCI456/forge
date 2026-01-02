@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Types.h"
+#include <filesystem>
+
 FolderState parse_directory(const std::filesystem::path& current_directory);
 
 std::vector<Task> create_plan(const FolderState& state);

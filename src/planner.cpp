@@ -25,7 +25,7 @@ std::vector<Task> create_plan(const FolderState& state) {
         run_task.name = input_path.filename().string();
 
         // Dependencies: It cannot start until "compile" is done.
-        run_task.dependencies.push_back("compile");
+        run_task.dependencies.emplace_back("compile"); // push_back but constructing the object in the container rather than copying
 
         // output filename:
         // eg "tests1.out"

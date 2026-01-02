@@ -1,14 +1,14 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
-#include <cstdlib>
 
 #include "Types.h"
 #include "ForgeFunct.h"
 #include "Colours.h"
 #include "Constants.h"
-#include "GeneratorTools.h"
-#include "InputTools.h"
+#include "../include/UtilityHeaders/GeneratorTools.h"
+#include "../include/UtilityHeaders/InputTools.h"
+#include "../include/UtilityHeaders/ClipboardTools.h"
 
 
 namespace fs = std::filesystem;
@@ -16,7 +16,7 @@ namespace fs = std::filesystem;
 
 // 1 for program success and -1 for failure
 int run_manual_build() {
-    auto state = parse_directory(".");
+    const auto state = parse_directory(".");
     if (state.valid_build()) {
         std::cout << "Success!" << "\n\n";
     }
@@ -26,17 +26,6 @@ int run_manual_build() {
     }
 
     std::vector<Task> tasks = create_plan(state);
-
-    // // testing functionality
-    // for (auto task: tasks){
-    //     std::cout << task.name << '\n';
-    //     std::cout << task.command << '\n';
-    //     std::cout << "DEPENDENCIES: " << '\n';
-    //     for (auto dependency: task.dependencies){
-    //         std::cout << '\t' << dependency << '\n';
-    //     }
-    //     std::cout << "\n ------------- \n";
-    // }
 
     if (run_program(tasks)) std::cout << "ALL TASKS SUCCESSFULLY COMPLETED\n\n";
     else {
@@ -67,7 +56,7 @@ int print_help() {
 
 int run_stress() {
     // this segment can be abstracted into the create plan function to avoid repetition
-    auto state = parse_directory(".");
+    const auto state = parse_directory(".");
     if (state.valid_stress()) {
         std::cout << "Success!" << "\n\n";
     }
@@ -128,6 +117,8 @@ int setup_project(const char* dir_name) {
         return -1;
     }
 
+    std::string copy_paste_cmd = "cd " + std::string(dir_name);
+    copyToClipboard(copy_paste_cmd); // using a lot of online boilerplate magic
 
     // misc info
     std::cout << GREEN << "\nProject setup complete!" << RESET << "\n";
@@ -148,14 +139,18 @@ int main(int argc, char** argv) {
 
     std::string command = argv[1];
     if (command == "help" || command == "--help" || command == "-h") print_help();
+
     else if (command == "test") return run_manual_build();
+
     else if (command == "stress") return run_stress();
+
     else if (command == "in") {
         if (argc >= 3) {
             return handle_input_tests(true); // Third argument present, use copy_paste mode
         }
         return handle_input_tests(false); // No third argument, use Enter key mode
     }
+
     else if (command == "setup") {
         if (argc < 3) {
             std::cout << RED << "Error: Please provide a directory name" << RESET << "\n";
@@ -165,6 +160,7 @@ int main(int argc, char** argv) {
         return setup_project(argv[2]);
     }
  //   else if (command == "genfile") return run_stress(); potential feature rn snippet templates just easier
+
     else {
         std::cout << "Invalid command \"" << command << "\"\n\n";
         std::cout << "Try \"forge help\" \n\n";

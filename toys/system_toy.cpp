@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstdlib> // Required for std::system
 
 int main() {
     // Try a command that works

@@ -1,62 +1,39 @@
 
 
-#include "../../include/InputTools.h"
+#include "../../include/UtilityHeaders/InputTools.h"
 
 #include <iostream> // cin/cout - get line inherited from istream (parent)
 #include <fstream> // includes iostream but Imma keep it here just for clarity
 #include <string>
 #include <filesystem> // C++17 standard
 
-// Command configuration structure - easily extensible for future flags
-struct InputConfig {
-    std::string cmd_to_answer;      // Command to switch from input to answer
-    std::string cmd_next_case;      // Command to go to next test case
-    std::string help_to_answer;     // Help text for switching to answer
-    std::string help_next_case;     // Help text for going to next case
-    std::string prompt_to_answer;   // Prompt text when entering input
-    std::string prompt_next_case;   // Prompt text when entering output
-    
-    // Check if a line matches the command to switch to answer
-    bool is_answer_command(const std::string& line) const {
-        if (cmd_to_answer.empty()) {
-            return line.empty(); // Enter key mode
-        }
-        return line == cmd_to_answer; // String command mode
-    }
-    
-    // Check if a line matches the command to go to next case
-    bool is_next_command(const std::string& line) const {
-        if (cmd_next_case.empty()) {
-            return line.empty(); // Enter key mode
-        }
-        return line == cmd_next_case; // String command mode
-    }
-};
+#include <Types.h>
+
 
 // Create configuration based on flags
-InputConfig create_config(bool copy_paste) {
-    InputConfig config;
+InputConfig create_in_config(bool copy_paste) {
+    InputConfig in_config;
     
     if (copy_paste) {
-        config.cmd_to_answer = "--";
-        config.cmd_next_case = "++";
-        config.help_to_answer = "Type '" + config.cmd_to_answer + "' to switch to Answer.";
-        config.help_next_case = "Type '" + config.cmd_next_case + "' to save and start Next Case.";
-        config.prompt_to_answer = " (Type '" + config.cmd_to_answer + "' for Output):";
-        config.prompt_next_case = " (Type '" + config.cmd_next_case + "' for Next):";
+        in_config.cmd_to_answer = "--";
+        in_config.cmd_next_case = "++";
+        in_config.help_to_answer = "Type '" + in_config.cmd_to_answer + "' to switch to Answer.";
+        in_config.help_next_case = "Type '" + in_config.cmd_next_case + "' to save and start Next Case.";
+        in_config.prompt_to_answer = " (Type '" + in_config.cmd_to_answer + "' for Output):";
+        in_config.prompt_next_case = " (Type '" + in_config.cmd_next_case + "' for Next):";
     } else {
-        config.cmd_to_answer = "";  // Empty means Enter key
-        config.cmd_next_case = "";  // Empty means Enter key
-        config.help_to_answer = "Press Enter to switch to Answer.";
-        config.help_next_case = "Press Enter to save and start Next Case.";
-        config.prompt_to_answer = " (Press Enter for Output):";
-        config.prompt_next_case = " (Press Enter for Next):";
+        in_config.cmd_to_answer = "";  // Empty means Enter key
+        in_config.cmd_next_case = "";  // Empty means Enter key
+        in_config.help_to_answer = "Press Enter to switch to Answer.";
+        in_config.help_next_case = "Press Enter to save and start Next Case.";
+        in_config.prompt_to_answer = " (Press Enter for Output):";
+        in_config.prompt_next_case = " (Press Enter for Next):";
     }
     
-    return config;
+    return in_config;
 }
 
-// Helper to find the next available case number
+// Helper to find the next available case number - iterate through directory and find the next available file name
 int getNextCaseNumber() {
     int i = 1;
     while (std::filesystem::exists(std::to_string(i) + ".in")) {
@@ -65,17 +42,21 @@ int getNextCaseNumber() {
     return i;
 }
 
+// Runs the interactive console loop for the Forge Test Creator.
 int handle_input_tests(bool copy_paste) {
+    /* note this will start overwriting files if you randomly delete one in your directory
+    move to while loop if you want to prevent that from happening (at performance cost
+    of parsing your entire directory every single time */
     int caseNum = getNextCaseNumber();
     std::string line;
     
     // Create configuration based on flags
-    InputConfig config = create_config(copy_paste);
+    InputConfig in_config = create_in_config(copy_paste);
 
     std::cout << "=== Forge Test Creator ===\n";
     std::cout << "Directly writing to individual files.\n";
-    std::cout << config.help_to_answer << "\n";
-    std::cout << config.help_next_case << "\n";
+    std::cout << in_config.help_to_answer << "\n";
+    std::cout << in_config.help_next_case << "\n";
     std::cout << "Press CTRL+D to Quit.\n\n";
 
     while (true) { // runs till the user quits
@@ -89,10 +70,10 @@ int handle_input_tests(bool copy_paste) {
             return 1; 
         }
 
-        std::cout << "[Case " << caseNum << "] Enter Input" << config.prompt_to_answer << "\n";
+        std::cout << "[Case " << caseNum << "] Enter Input" << in_config.prompt_to_answer << "\n";
 
         while (std::getline(std::cin, line)) {
-            if (config.is_answer_command(line)) {
+            if (in_config.is_answer_command(line)) {
                 break; // Stop writing to .in, move to .out
             }
             // Direct write to file
@@ -117,10 +98,10 @@ int handle_input_tests(bool copy_paste) {
             return 1; 
         }
 
-        std::cout << "[Case " << caseNum << "] Enter Expected Output" << config.prompt_next_case << "\n";
+        std::cout << "[Case " << caseNum << "] Enter Expected Output" << in_config.prompt_next_case << "\n";
 
         while (std::getline(std::cin, line)) {
-            if (config.is_next_command(line)) {
+            if (in_config.is_next_command(line)) {
                 break; // Stop writing to .out, restart loop
             }
             // Direct write to file

@@ -1,9 +1,8 @@
 
 
-#include "GeneratorTools.h"
+#include "../../include/UtilityHeaders/GeneratorTools.h"
 
 #include "Constants.h"
-#include "ForgeFunct.h"
 #include "Colours.h"
 #include <filesystem>
 #include <iostream>
@@ -64,7 +63,7 @@ void prompt_user_for_input(int test_num, const std::string& in_file) {
 }
 
 // Generate and test one fuzzer test case, returns true if test passed
-bool generate_and_test_one(int test_num, const FolderState& state) {
+bool generate_and_test_one(int test_num) {
     namespace fs = std::filesystem;
     
     // Generate input file
@@ -103,9 +102,8 @@ bool generate_and_test_one(int test_num, const FolderState& state) {
         // NOW we run the expensive visual diff to show the user what happened
         std::string view_cmd = "colordiff -y " + sol_out + " " + expected_out + " || diff -y " + sol_out + " " + expected_out;
         std::system((view_cmd).c_str());
-        //std::system(("cat " + in_file).c_str());
-        // // Ask user if they want to see the input file
-
+        
+        // Ask user if they want to see the input file
         prompt_user_for_input(test_num, in_file);
 
         return false; // Stop the loop
@@ -136,7 +134,7 @@ int run_fuzzer(const FolderState& state) {
     // Generate and test incrementally
     std::cout << "RUNNING FUZZER TESTS..." << '\n';
     for (int i = 0; i < config::GEN_SIZE; i++) {
-        if (!generate_and_test_one(i, state)) {
+        if (!generate_and_test_one(i)) {
             std::cout << RED << "\nFUZZER STOPPED: Test case " << i << " failed" << RESET << "\n";
             return -1;
         }
