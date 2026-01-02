@@ -14,7 +14,7 @@ bool run_program(const std::vector<Task> & tasks){
 	std::cout << "COMPILING [TASKS]..." << '\n';
 
 	bool all_passed = true;
-	for (const const Task& & task: tasks){
+	for (const Task & task: tasks){
 
 		// print the task name
 		std::cout << "TESTING: " << task.name << "...";

@@ -72,7 +72,7 @@ int run_stress() {
 
 
 int setup_project(const char* dir_name) {
-    // Check if directory name was provided
+    // Check if a directory name was provided
     if (dir_name == nullptr || std::string(dir_name).empty()) {
         std::cout << RED << "Error: Please provide a directory name" << RESET << "\n";
         std::cout << "Usage: forge setup <directory_name>\n";
@@ -96,19 +96,27 @@ int setup_project(const char* dir_name) {
         return -1;
     }
     
-    // Create sol.cpp file
+    // Create sol.cpp file and gen file
     fs::path sol_file = project_dir / config::SOLUTION_NAME;
+    fs::path gen_file = project_dir / config::GENERATOR_NAME;
 
     // create the file  - check the ofstream initalisaiton was successful
-    std::ofstream file(sol_file);
-    if (!file.is_open()) {
+    std::ofstream s_file(sol_file);
+    std::ofstream g_file(gen_file);
+    if (!s_file.is_open()) {
         std::cout << RED << "Error: Could not create " << config::SOLUTION_NAME << RESET << "\n";
         return -1;
     }
     std::cout << GREEN << "Created file: " << sol_file.string() << RESET << "\n";
 
+    if (! g_file.is_open()) {
+        std::cout << RED << "Error: Could not create " << config::GENERATOR_NAME << RESET << "\n";
+        return -1;
+    }
+    std::cout << GREEN << "Created file: " << sol_file.string() << RESET << "\n";
 
-    // use the editor to open the file
+
+    // use the editor to open the sol file
     std::string open_cmd = std::string(config::EDITOR) + " " + sol_file.string();
     std::cout << CYAN << "Opening " << sol_file.string() << " in " << config::EDITOR << "..." << RESET << "\n";
     if(std::system(open_cmd.c_str())) {
@@ -117,6 +125,7 @@ int setup_project(const char* dir_name) {
         return -1;
     }
 
+    // copy directory to clipboard to quickly cd into
     std::string copy_paste_cmd = "cd " + std::string(dir_name);
     copyToClipboard(copy_paste_cmd); // using a lot of online boilerplate magic
 
@@ -124,7 +133,7 @@ int setup_project(const char* dir_name) {
     std::cout << GREEN << "\nProject setup complete!" << RESET << "\n";
     std::cout << "  Directory: " << fs::absolute(project_dir).string() << "\n";
     std::cout << "  Solution: " << sol_file.string() << "\n";
-    std::cout << "\nTo get started, run: cd " << dir_name << "\n";
+    std::cout << "\nPATH IS ON YOUR CLIPBOARD... To get started, run: cd " << dir_name << "\n";
     
     return 0;
 }
