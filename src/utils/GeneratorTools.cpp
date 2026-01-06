@@ -138,7 +138,7 @@ int run_fuzzer(const FolderState& state, const int test_count) { // test count p
     std::cout << "If on infinite (default mode press CTRL+C) to quit  " << '\n';
     std::cout << "(quit case will show as failed but that is most likely a false positive " << '\n';
 
-    for (int i = 0; i < test_count; i++) {
+    for (int i = 0; test_count == -1 || i < test_count; i++) {
         if (!generate_and_test_one(i)) {
             std::cout << RED << "\nFUZZER STOPPED: Test case " << i << " failed" << RESET << "\n";
             return -1;

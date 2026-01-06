@@ -15,8 +15,8 @@ namespace config {
 
     constexpr std::string_view EDITOR      = "subl"; // shortcut I set up for sublime - use "code" for visual studio
 
-    // basically infinite
-    constexpr int GEN_SIZE = INT_MAX; // number of files to generate with gen.cpp
+    // default = -1 for infinite. See the or condition in the run_fuzzer function
+    constexpr int GEN_SIZE = -1; // number of files to generate with gen.cpp
 
     // personal compile flag - just add to the end - maybe make list in future  - for tui
     constexpr std::string_view PERSONAL_FLAGS = " -fsanitize=address -g"; // not yet used

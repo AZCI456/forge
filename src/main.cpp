@@ -92,9 +92,12 @@ int run_stress(const std::vector<std::string> & command_flags) {
     
     if (!command_flags.empty()) {
         try {
-            test_count = std::stoi(command_flags[0]);
+            size_t pos;
+            test_count = std::stoi(command_flags[0], &pos);
+            // Ensure the entire string was parsed (e.g., reject "93w")
+            if (pos != command_flags[0].size()) throw std::invalid_argument("Trailing characters"); // caught by logic error
         }
-        catch (const std::invalid_argument& e_invalid_arg) {
+        catch (const std::logic_error& e) { // Catches both invalid_argument and out_of_range
             std::cout << RED << "Error: Invalid number of tests specified." << RESET << "\n";
             return -1;
         }
