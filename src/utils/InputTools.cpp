@@ -11,10 +11,11 @@
 
 
 // Create configuration based on flags
-InputConfig create_in_config(bool copy_paste) {
+// No third argument, use Enter key mode
+InputConfig create_in_config(bool manual_mode) {
     InputConfig in_config;
     
-    if (copy_paste) {
+    if (manual_mode) {
         in_config.cmd_to_answer = "--";
         in_config.cmd_next_case = "++";
         in_config.help_to_answer = "Type '" + in_config.cmd_to_answer + "' to switch to Answer.";
@@ -43,15 +44,19 @@ int getNextCaseNumber() {
 }
 
 // Runs the interactive console loop for the Forge Test Creator.
-int handle_input_tests(bool copy_paste) {
+int handle_input_tests(const std::vector<std::string> & flags) {
     /* note this will start overwriting files if you randomly delete one in your directory
     move to while loop if you want to prevent that from happening (at performance cost
     of parsing your entire directory every single time */
+
+    // first check if "flags" is not empty for short circuiting to prevent a segfault
+    bool manual_mode = ! flags.empty() && flags[0] != "-m";
+
     int caseNum = getNextCaseNumber();
     std::string line;
     
     // Create configuration based on flags
-    InputConfig in_config = create_in_config(copy_paste);
+    InputConfig in_config = create_in_config(manual_mode);
 
     std::cout << "=== Forge Test Creator ===\n";
     std::cout << "Directly writing to individual files.\n";

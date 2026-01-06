@@ -50,13 +50,19 @@ void parse_file(const fs::path& file_path, FolderState & folderState){
 
 
 // check if successful in the main calling function
-FolderState parse_directory(const fs::path & current_directory){
+// default is just the current directory
+FolderState parse_directory(const fs::path & current_directory, const fs::path & test_cases = "."){
 
 	FolderState folderState;
 
 	// reference files in current "." directory
 	for (const auto & file : fs::directory_iterator(current_directory)) { 
     	parse_file(file.path(), folderState);
+	}
+	if (test_cases != current_directory) {
+		for (const auto & test : fs::directory_iterator(test_cases)) {
+			parse_file(test.path(), folderState);
+		}
 	}
 
 	// check if successful

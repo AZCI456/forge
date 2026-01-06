@@ -15,4 +15,6 @@ add_executable(forge
         include/UtilityHeaders/InputTools.h
         src/utils/ClipboardTools.cpp
         include/UtilityHeaders/ClipboardTools.h
+        src/error_messages.cpp
+        src/error_messages.h
 )

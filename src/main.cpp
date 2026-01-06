@@ -15,8 +15,13 @@ namespace fs = std::filesystem;
 
 
 // 1 for program success and -1 for failure
-int run_manual_build() {
-    const auto state = parse_directory(".");
+int run_manual_build(const std::vector<std::string> & command_flags) {
+
+    // either use the home directory or the provided one
+    // we need to find the cleanest way to pass test cases separate from the solution files
+    fs::path test_dir = !command_flags.empty() ? command_flags[0] : ".";
+
+    const auto state = parse_directory(".", test_dir);
     if (state.valid_build()) {
         std::cout << "Success!" << "\n\n";
     }
@@ -55,13 +60,13 @@ int print_help() {
 
 
 int run_stress() {
-    // this segment can be abstracted into the create plan function to avoid repetition
+    // this segment can be abstracted into the create plan function to avoid repetition (just need to see how to differentiate the output text and the function call valid stress) perhaps use inheritance instead of a struct for stress test verse manual test
     const auto state = parse_directory(".");
     if (state.valid_stress()) {
         std::cout << "Success!" << "\n\n";
     }
     else {
-        // make it so the missing file is highlighted
+        // make it so the missing file is highlightedsaz
         std::cout << RED << "CANNOT BUILD - ONE OF THE FOLLOWING FILES MISSING: SOL, GEN, BF" << RESET << "\n";
         return -1;
     }
@@ -71,9 +76,11 @@ int run_stress() {
 };
 
 
-int setup_project(const char* dir_name) {
+int setup_project(const std::vector<std::string> & command_flags) { // not suer on the overhead difference to using const char*
     // Check if a directory name was provided
-    if (dir_name == nullptr || std::string(dir_name).empty()) {
+    const std::string & dir_name = command_flags[0];
+
+    if (dir_name.empty()) {
         std::cout << RED << "Error: Please provide a directory name" << RESET << "\n";
         std::cout << "Usage: forge setup <directory_name>\n";
         return -1;
@@ -113,7 +120,7 @@ int setup_project(const char* dir_name) {
         std::cout << RED << "Error: Could not create " << config::GENERATOR_NAME << RESET << "\n";
         return -1;
     }
-    std::cout << GREEN << "Created file: " << sol_file.string() << RESET << "\n";
+    std::cout << GREEN << "Created file: " << gen_file.string() << RESET << "\n";
 
 
     // use the editor to open the sol file
@@ -146,27 +153,36 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    std::string command = argv[1];
+    // easier handling
+    std::vector<std::string> args;
+    for (int i = 1; i < argc; ++i) {
+        args.push_back(std::string(argv[i]));
+    }
+
+    std::string command = args[0];
+    // Create a new vector containing only the flags (arguments after the command)
+    std::vector<std::string> command_flags;
+    if (args.size() > 1) {
+        command_flags.assign(args.begin() + 1, args.end());
+    }
+
     if (command == "help" || command == "--help" || command == "-h") print_help();
 
-    else if (command == "test") return run_manual_build();
+    else if (command == "test") return run_manual_build(command_flags);
 
     else if (command == "stress") return run_stress();
 
-    else if (command == "in") {
-        if (argc >= 3) {
-            return handle_input_tests(true); // Third argument present, use copy_paste mode
-        }
-        return handle_input_tests(false); // No third argument, use Enter key mode
-    }
+    // flag -m for manual mode, (explicit characters for newlines
+    else if (command == "in")  return handle_input_tests(command_flags);
 
+   // else if (command == "copy") mv current sol file and make new sol file
     else if (command == "setup") {
         if (argc < 3) {
             std::cout << RED << "Error: Please provide a directory name" << RESET << "\n";
             std::cout << "Usage: forge setup <directory_name>\n";
             return -1;
         }
-        return setup_project(argv[2]);
+        return setup_project(command_flags);
     }
 
     else {

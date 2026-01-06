@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 /**
  * Scans the current directory for existing test case files (e.g., 1.in, 2.in)
@@ -13,4 +14,4 @@ int getNextCaseNumber();
  * saving them to numbered .in and .out files automatically.
  * * @return 0 on success, non-zero on error.
  */
-int handle_input_tests(bool copy_paste);
+int handle_input_tests(const std::vector<std::string> & flags);

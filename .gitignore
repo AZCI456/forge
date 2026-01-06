@@ -2,3 +2,4 @@ gen_tests
 
 .vscode
 .gitignore
+.cursor

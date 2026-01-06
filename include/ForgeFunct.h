@@ -3,7 +3,7 @@
 #include "Types.h"
 #include <filesystem>
 
-FolderState parse_directory(const std::filesystem::path& current_directory);
+FolderState parse_directory(const std::filesystem::path& current_directory, const fs::path & test_cases = ".");
 
 std::vector<Task> create_plan(const FolderState& state);
 
