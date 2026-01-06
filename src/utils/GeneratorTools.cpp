@@ -20,7 +20,7 @@ void prepareDirectory(const fs::path & folder) {
 
 void compile_file(const std::string_view & file, const std::string& name) {
     std::cout << "  Compiling Generator... ";
-    if (std::system(("clang++ -std=c++17 " + std::string(file) + " -o" + name).c_str()) != 0) {
+    if (std::system(("clang++ -std=c++17 " +  std::string(file) + " -o" + name).c_str()) != 0) {
         std::cerr << "FAILED. Check " << name << " for errors.\n";
         return;
     }
@@ -109,13 +109,14 @@ bool generate_and_test_one(int test_num) {
         return false; // Stop the loop
     }
 
-// Optional: Print a dot or nothing for success to keep it clean
-    std::cout << "." << std::flush; 
+    // Optional: can switch to dot mode if more satisfying - just replaced text with "."
+    //  not plus one because now in the past
+    std::cout << "\r" << "Tests Passed: [" << test_num << "]" << std::flush;
     return true;
 }
 
 // Run fuzzer: generate and test incrementally, breaking on first failure
-int run_fuzzer(const FolderState& state) {
+int run_fuzzer(const FolderState& state, const int test_count) { // test count passed in as const
     prepareDirectory(config::GEN_FOLDER);
     
     // Compile generator and brute force
@@ -130,16 +131,20 @@ int run_fuzzer(const FolderState& state) {
         return -1;
     }
     std::cout << GREEN << "[SUCCESSFUL]" << RESET << "\n\n";
-    
+
+    //
     // Generate and test incrementally
     std::cout << "RUNNING FUZZER TESTS..." << '\n';
-    for (int i = 0; i < config::GEN_SIZE; i++) {
+    std::cout << "If on infinite (default mode press CTRL+C) to quit  " << '\n';
+    std::cout << "(quit case will show as failed but that is most likely a false positive " << '\n';
+
+    for (int i = 0; i < test_count; i++) {
         if (!generate_and_test_one(i)) {
             std::cout << RED << "\nFUZZER STOPPED: Test case " << i << " failed" << RESET << "\n";
             return -1;
         }
     }
     
-    std::cout << GREEN << "\nALL FUZZER TESTS PASSED (" << config::GEN_SIZE << " test cases)" << RESET << "\n";
+    std::cout << GREEN << "\nALL FUZZER TESTS PASSED (" << test_count << " test cases)" << RESET << "\n";
     return 0;
 }

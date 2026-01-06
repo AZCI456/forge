@@ -22,13 +22,15 @@ bool run_program(const std::vector<Task> & tasks){
 		// then the result
 		if(std::system(task.command.c_str())) {
 			std::cout << RED << "[FAILED]\n\n" << RESET;
-			all_passed = false;
+			//all_passed = false;
+			return false; // early stop - uncomment all past to compile everything regardless of failure
 		}
-		else {
+		else { // here in case you want to uncomment all past
 			std::cout << GREEN << "[SUCCESSFUL]\n\n" << RESET;
 		}
 
 	}
-	return all_passed;
+	return true;
+	//return all_passed;
 
 }

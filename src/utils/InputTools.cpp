@@ -50,7 +50,7 @@ int handle_input_tests(const std::vector<std::string> & flags) {
     of parsing your entire directory every single time */
 
     // first check if "flags" is not empty for short circuiting to prevent a segfault
-    bool manual_mode = ! flags.empty() && flags[0] != "-m";
+    bool manual_mode = ! flags.empty() && flags[0] == "-m";
 
     int caseNum = getNextCaseNumber();
     std::string line;

@@ -15,15 +15,17 @@ namespace config {
 
     constexpr std::string_view EDITOR      = "subl"; // shortcut I set up for sublime - use "code" for visual studio
 
-    constexpr int GEN_SIZE = 1000; // number of files to generate with gen.cpp
+    // basically infinite
+    constexpr int GEN_SIZE = INT_MAX; // number of files to generate with gen.cpp
 
-    /**
-     *
-     */
+    // personal compile flag - just add to the end - maybe make list in future  - for tui
+    constexpr std::string_view PERSONAL_FLAGS = " -fsanitize=address -g"; // not yet used
 
     // not constexpr as compiler can't use the heap to allocate the file text
     // inline = one definition per header file, const = runtime constant
     inline const fs::path GEN_FOLDER = "gen_tests";
+
+
 
 
 }

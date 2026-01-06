@@ -32,6 +32,8 @@ int run_manual_build(const std::vector<std::string> & command_flags) {
 
     std::vector<Task> tasks = create_plan(state);
 
+    //
+    // if (command_flags.size() > 1 && run_program(tasks)) std::cout << "ALL TASKS SUCCESSFULLY COMPLETED\n\n";
     if (run_program(tasks)) std::cout << "ALL TASKS SUCCESSFULLY COMPLETED\n\n";
     else {
         std::cout << "AT LEAST ONE TASK FAILED... ABORTING!\n";
@@ -52,27 +54,72 @@ int print_help() {
     std::cout << "                    p <optional> if you want enter to move to next section\n";
 
     std::cout << "  forge help       Show this help message\n";
+    std::cout << "  forge flags      Show detailed information about flags\n";
 
     return 0;
 };
 
+int print_flags() {
+    std::cout << CYAN << "Forge - Flags Information" << RESET << "\n";
+    std::cout << "Usage: forge <command> [flags]\n\n";
+
+    std::cout << "Command: test\n";
+    std::cout << "  forge test [test_dir]\n";
+    std::cout << "  [test_dir]  Optional. Path to directory with test cases. Defaults to current directory.\n\n";
+
+    std::cout << "Command: stress\n";
+    std::cout << "  forge stress [count]\n";
+    std::cout << "  [count]     Optional. Number of tests to run. Defaults to infinite.\n\n";
+
+    std::cout << "Command: setup\n";
+    std::cout << "  forge setup <dir>\n";
+    std::cout << "  <dir>       Required. Name of the new project directory.\n\n";
+
+    std::cout << "Command: in\n";
+    std::cout << "  forge in [-m]\n";
+    std::cout << "  [-m]         Optional. '-m' enables explicit command mode.\n";
+    std::cout << "              In explicit mode, type '--' for output, '++' for next case.\n";
+    std::cout << "              Default (or '-m') uses Enter key for navigation.\n";
+
+    return 0;
+}
+
 // maybe put in the state struct or promote to class
 
 
-int run_stress() {
+int run_stress(const std::vector<std::string> & command_flags) {
+    int test_count = config::GEN_SIZE; // Default to config (infinite)
+    
+    if (!command_flags.empty()) {
+        try {
+            test_count = std::stoi(command_flags[0]);
+        }
+        catch (const std::invalid_argument& e_invalid_arg) {
+            std::cout << RED << "Error: Invalid number of tests specified." << RESET << "\n";
+            return -1;
+        }
+        catch (const std::exception& e) {
+            std::cout << RED << "DEV: unaccounted for error - please contact developer" << e.what() <<RESET << "\n";
+            std::cout << "Press " << CYAN << "\'y\'" << RESET << " to continue & anything else to abort: "<< ""; //  RED << "N" << RESET << "to abort"<<
+            std::string input; std::cin >> input;
+            if (input != "y") return -1;
+        }
+    }
+
     // this segment can be abstracted into the create plan function to avoid repetition (just need to see how to differentiate the output text and the function call valid stress) perhaps use inheritance instead of a struct for stress test verse manual test
     const auto state = parse_directory(".");
     if (state.valid_stress()) {
         std::cout << "Success!" << "\n\n";
     }
     else {
-        // make it so the missing file is highlightedsaz
+        // make it so the missing file is highlighted
         std::cout << RED << "CANNOT BUILD - ONE OF THE FOLLOWING FILES MISSING: SOL, GEN, BF" << RESET << "\n";
         return -1;
     }
     
     // Run fuzzer: generates and tests incrementally, breaks on first failure
-    return run_fuzzer(state);
+    // Note: You must update the definition of run_fuzzer to accept this int
+    return run_fuzzer(state, test_count);
 };
 
 
@@ -156,7 +203,7 @@ int main(int argc, char** argv) {
     // easier handling
     std::vector<std::string> args;
     for (int i = 1; i < argc; ++i) {
-        args.push_back(std::string(argv[i]));
+        args.emplace_back(argv[i]);
     }
 
     std::string command = args[0];
@@ -168,9 +215,11 @@ int main(int argc, char** argv) {
 
     if (command == "help" || command == "--help" || command == "-h") print_help();
 
+    else if (command == "flags") print_flags();
+
     else if (command == "test") return run_manual_build(command_flags);
 
-    else if (command == "stress") return run_stress();
+    else if (command == "stress") return run_stress(command_flags);
 
     // flag -m for manual mode, (explicit characters for newlines
     else if (command == "in")  return handle_input_tests(command_flags);

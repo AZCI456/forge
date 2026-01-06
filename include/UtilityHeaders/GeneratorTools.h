@@ -1,5 +1,7 @@
 #pragma once
 #include <filesystem>
+
+#include "Constants.h"
 #include "../Types.h"
 
 
@@ -11,7 +13,7 @@ void gen_tests();
 bool generate_and_test_one(int test_num);
 
 // Run fuzzer: generate and test incrementally, breaking on first failure
-int run_fuzzer(const FolderState& state);
+int run_fuzzer(const FolderState& state, const int test_count);
 
 //
 // class GeneratorTools {
