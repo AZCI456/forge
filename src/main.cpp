@@ -94,11 +94,13 @@ int run_stress(const std::vector<std::string> & command_flags) {
         try {
             size_t pos;
             test_count = std::stoi(command_flags[0], &pos);
-            // Ensure the entire string was parsed (e.g., reject "93w")
-            if (pos != command_flags[0].size()) throw std::invalid_argument("Trailing characters"); // caught by logic error
+            // Ensure the entire string was parsed (e.g., reject "93w" - see note above)
+            // also check if negative number given
+            if (pos != command_flags[0].size() || test_count <= 0) throw std::invalid_argument("Invalid input"); // caught by logic error
         }
         catch (const std::logic_error& e) { // Catches both invalid_argument and out_of_range
             std::cout << RED << "Error: Invalid number of tests specified." << RESET << "\n";
+            std::cout << "Please enter a valid integer value: [tests] > 0" << "\n";
             return -1;
         }
         catch (const std::exception& e) {
