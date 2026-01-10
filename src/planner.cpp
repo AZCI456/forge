@@ -42,7 +42,8 @@ std::vector<Task> create_plan(const FolderState& state) {
             // First try colordiff, fallback to regular diff if not available
             // Show the diff output (using || true to always show it), then check if files are identical
             std::string expected_output = state.valid_sols.at(input_path).string();
-            run_task.command += " && (colordiff -y " + output_path.string() + " " + expected_output + " 2>/dev/null || diff -y " + output_path.string() + " " + expected_output + " || true) && diff -q " + output_path.string() + " " + expected_output + " > /dev/null 2>&1";
+            // run_task.command += " && (colordiff -y " + output_path.string() + " " + expected_output + " 2>/dev/null || diff -y " + output_path.string() + " " + expected_output + " || true) && diff -q " + output_path.string() + " " + expected_output + " > /dev/null 2>&1";
+            run_task.command += "&& diff -y " + output_path.string() + " " + expected_output + "";
         }
 
 
