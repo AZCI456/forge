@@ -7,6 +7,7 @@ include_directories(include include/UtilityHeaders)
 
 add_executable(forge
         src/main.cpp
+        src/cli.cpp
         src/directory_parser.cpp
         src/planner.cpp
         src/executor.cpp
