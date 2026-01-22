@@ -22,7 +22,8 @@ std::vector<Task> create_plan(const FolderState& state) {
         Task run_task;
         
         // eg "test1.in"
-        run_task.name = input_path.filename().string();
+        // fs::path home_relationship = input_path.lexically_relative(state.sol_path); - for different directories same name
+        run_task.name = input_path.filename().string(); //  home_relationship.string();// this is the standard filename... input_path.filename().string();
 
         // Dependencies: It cannot start until "compile" is done.
         run_task.dependencies.emplace_back("compile"); // push_back but constructing the object in the container rather than copying

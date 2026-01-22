@@ -71,7 +71,7 @@ int handle_input_tests(const std::vector<std::string> & flags) {
         std::ofstream inFile(inFileName);
 
         if (!inFile) { 
-            std::cerr << "Error creating " << inFileName << std::endl; 
+            std::cerr << "Error creating " << inFileName << std::endl;
             return 1; 
         }
 
@@ -99,7 +99,7 @@ int handle_input_tests(const std::vector<std::string> & flags) {
         std::ofstream outFile(outFileName);
 
         if (!outFile) { 
-            std::cerr << "Error creating " << outFileName << std::endl; 
+            std::cerr << "Error creating " << outFileName << std::endl;
             return 1; 
         }
 

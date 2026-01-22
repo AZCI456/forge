@@ -50,15 +50,15 @@ void gen_tests() {
 // extracted from the original function to increase readability.
 //
 void prompt_user_for_input(int test_num, const std::string& in_file) {
-    std::cout << CYAN << "\nWould you like to see the input file? (Y/N): " << RESET;
+    std::cout << colours::CYAN << "\nWould you like to see the input file? (Y/N): " << colours::RESET;
     std::string response;
     std::cin >> response;
 
     if (response == "Y" || response == "y") {
-        std::cout << CYAN << "\n--- Input file for test case " << test_num << " ---" << RESET << "\n";
+        std::cout << colours::CYAN << "\n--- Input file for test case " << test_num << " ---" << colours::RESET << "\n";
         std::string cat_cmd = "cat " + in_file;
         std::system(cat_cmd.c_str());
-        std::cout << CYAN << "--- End of input file ---" << RESET << "\n\n";
+        std::cout << colours::CYAN << "--- End of input file ---" << colours::RESET << "\n\n";
     }
 }
 
@@ -67,18 +67,18 @@ bool generate_and_test_one(int test_num) {
     namespace fs = std::filesystem;
     
     // Generate input file
-    std::string in_file = config::GEN_FOLDER.string() + "/" + std::to_string(test_num) + ".in";
+    std::string in_file = config::GEN_FOLDER.string() + "/g_" + std::to_string(test_num) + ".in";
     std::string command = "./gen > " + in_file;
     if (std::system(command.c_str()) != 0) {
-        std::cerr << RED << "Failed to generate test case " << test_num << RESET << "\n";
+        std::cerr << colours::RED << "Failed to generate test case " << test_num << colours::RESET << "\n";
         return false;
     }
     
     // Generate expected output using brute force
-    std::string expected_out = config::GEN_FOLDER.string() + "/" + std::to_string(test_num) + ".out";
+    std::string expected_out = config::GEN_FOLDER.string() + "/g_" + std::to_string(test_num) + ".out";
     command = "./bf < " + in_file + " > " + expected_out;
     if (std::system(command.c_str()) != 0) {
-        std::cerr << RED << "Failed to generate expected output for test case " << test_num << RESET << "\n";
+        std::cerr << colours::RED << "Failed to generate expected output for test case " << test_num << colours::RESET << "\n";
         return false;
     }
     
@@ -86,7 +86,7 @@ bool generate_and_test_one(int test_num) {
     std::string sol_out = config::GEN_FOLDER.string() + "/s_" + std::to_string(test_num) + ".out";
     command = "./sol < " + in_file + " > " + sol_out;
     if (std::system(command.c_str()) != 0) {
-        std::cout << RED << "[FAILED] - Runtime error on test case " << test_num << RESET << "\n";
+        std::cout << colours::RED << "[FAILED] - Runtime error on test case " << test_num << colours::RESET << "\n";
         return false;
     }
     
@@ -97,10 +97,10 @@ bool generate_and_test_one(int test_num) {
 
     if (std::system(check_cmd.c_str()) != 0) {
         // 3. ONLY print the visual diff if it FAILED
-        std::cout << RED << "\n[FAILED] - Output mismatch on test case " << test_num << RESET << "\n";
+        std::cout << colours::RED << "\n[FAILED] - Output mismatch on test case " << test_num << colours::RESET << "\n";
         
         // NOW we run the expensive visual diff to show the user what happened
-        std::string view_cmd = "colordiff -y " + sol_out + " " + expected_out + " || diff -y " + sol_out + " " + expected_out;
+        std::string view_cmd = "diff -y " + sol_out + " " + expected_out;
         std::system((view_cmd).c_str());
         
         // Ask user if they want to see the input file
@@ -127,10 +127,10 @@ int run_fuzzer(const FolderState& state, const int test_count) { // test count p
     std::string compile_cmd = "clang++ -std=c++17 " + state.sol_path.string() + " -o sol";
     std::cout << "COMPILING [SOLUTION]..." << '\n';
     if (std::system(compile_cmd.c_str()) != 0) {
-        std::cerr << RED << "Failed to compile solution" << RESET << "\n";
+        std::cerr << colours::RED << "Failed to compile solution" << colours::RESET << "\n";
         return -1;
     }
-    std::cout << GREEN << "[SUCCESSFUL]" << RESET << "\n\n";
+    std::cout << colours::GREEN << "[SUCCESSFUL]" << colours::RESET << "\n\n";
 
     //
     // Generate and test incrementally
@@ -140,11 +140,11 @@ int run_fuzzer(const FolderState& state, const int test_count) { // test count p
 
     for (int i = 0; test_count == -1 || i < test_count; i++) {
         if (!generate_and_test_one(i)) {
-            std::cout << RED << "\nFUZZER STOPPED: Test case " << i << " failed" << RESET << "\n";
+            std::cout << colours::RED << "\nFUZZER STOPPED: Test case " << i << " failed" << colours::RESET << "\n";
             return -1;
         }
     }
     
-    std::cout << GREEN << "\nALL FUZZER TESTS PASSED (" << test_count << " test cases)" << RESET << "\n";
+    std::cout << colours::GREEN << "\nALL FUZZER TESTS PASSED (" << test_count << " test cases)" << colours::RESET << "\n";
     return 0;
 }

@@ -11,7 +11,7 @@ namespace fs = std::filesystem; // alias for brevity
 // this coudl be a simple 5 liner but most is there so that the user understands where they are in the execution flow
 bool run_program(const std::vector<Task> & tasks){
 
-	std::cout << "COMPILING [TASKS]..." << '\n';
+	std::cout << "COMPILING [TASKS]...\n\n";
 
 	bool all_passed = true;
 	for (const Task & task: tasks){
@@ -21,12 +21,12 @@ bool run_program(const std::vector<Task> & tasks){
 
 		// then the result
 		if(std::system(task.command.c_str())) {
-			std::cout << RED << "[FAILED]\n\n" << RESET;
+			std::cout << colours::RED << "[FAILED]\n\n" << colours::RESET;
 			all_passed = false;
 			//return false; // early stop - uncomment all past to compile everything regardless of failure
 		}
 		else { // here in case you want to uncomment all past
-			std::cout << GREEN << "[SUCCESSFUL]\n\n" << RESET;
+			std::cout << colours::GREEN << "[SUCCESSFUL]\n\n" << colours::RESET;
 		}
 
 	}

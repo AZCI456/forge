@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 
+#include "Colours.h"
 #include "Types.h"
 #include "Constants.h"
 
@@ -67,12 +68,14 @@ FolderState parse_directory(const fs::path & current_directory, const fs::path &
 
 	// check if successful
 
+	std::string SUCCESS = colours::GREEN+"Y";
+	std::string FAIL = colours::RED+"N";
 
     std::cout << "[FORGE] Project Scan Complete:\n";
-    std::cout << "  Solution: " << folderState.sol_path.filename() << "\n";
-    std::cout << "  BF Approach: " << (folderState.bf_path.empty() ? "N":"Y") << "\n";
+    std::cout << "  Solution: " << (folderState.sol_path.empty() ? FAIL:SUCCESS) << colours::RESET << "\n"; // otherwise can show the filename
+    std::cout << "  BF Approach: " << (folderState.bf_path.empty() ? FAIL:SUCCESS) << colours::RESET << "\n";
     // GENERATOR FEATURE STUB
-    std::cout << "  Generator: " << (folderState.generator_path.empty() ? "N" : "Y") << "\n";
+    std::cout << "  Generator: " << (folderState.generator_path.empty() ? FAIL:SUCCESS) << colours::RESET << "\n";
     std::cout << "  Manual Tests: " << folderState.tests.size() << " found.\n";
 
     return folderState;
