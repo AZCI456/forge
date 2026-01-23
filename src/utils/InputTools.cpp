@@ -1,11 +1,10 @@
-
-
 #include "../../include/UtilityHeaders/InputTools.h"
 
 #include <iostream> // cin/cout - get line inherited from istream (parent)
 #include <fstream> // includes iostream but Imma keep it here just for clarity
 #include <string>
 #include <filesystem> // C++17 standard
+#include <limits>
 
 #include <Types.h>
 
@@ -41,6 +40,20 @@ int getNextCaseNumber() {
         i++;
     }
     return i;
+}
+
+bool handle_EOF(std::string fileName) {
+    // Handle CTRL+D (EOF)
+    if (std::cin.eof()) {
+        std::cout << "\n>> EOF detected.";
+        if (fs::file_size(fileName) == 0) {
+            fs::remove(fileName);
+            std::cout << " " << fileName << " deleted.";
+        }
+        std::cout << "\n";
+        return true;
+    }
+    return false;
 }
 
 // Runs the interactive console loop for the Forge Test Creator.
@@ -87,11 +100,22 @@ int handle_input_tests(const std::vector<std::string> & flags) {
         inFile.close(); // Save and close immediately
 
         // Handle CTRL+D (EOF) during input
-        if (std::cin.eof()) {
-            std::cout << "\n>> EOF detected. " << inFileName << " deleted. Exiting.\n";
-            // Delete the partial file
-            std::filesystem::remove(inFileName);
-            return 0;
+        if (handle_EOF(inFileName)) {
+            break; // unfinished features below
+
+            // unsolved problems implementation - keeps consuming the end of line
+            // std::cin.ignore(); // Clear EOF flag to allow reading again
+            // std::string message;
+            // // unsolved problems implementation - keeps consuming the end of line
+            // std::cout << std::endl << "DO YOU WANT TO EXIT WITHOUT GIVING A SOLUTION?  [Y/N]  ";
+            // std::cin >> message;
+            // // Use getline to safely read the response and consume the newline
+            // if (!std::getline(std::cin, message)) {
+            //     break;
+            // }
+            //
+            // if (message == "Y" || message == "y") break;
+            // //continue; // Restart the loop to retry the current case
         }
 
         // --- STEP 2: OUTPUT ---
@@ -114,12 +138,7 @@ int handle_input_tests(const std::vector<std::string> & flags) {
         }
         outFile.close(); // Save and close immediately
 
-        // Handle CTRL+D (EOF) during output
-        if (std::cin.eof()) {
-            std::cout << "\n>> EOF detected. " << outFileName << " deleted. Exiting.\n";
-            std::filesystem::remove(outFileName);
-            break;
-        }
+        if (handle_EOF(outFileName)) break;
 
         std::cout << ">> Case " << caseNum << " Saved.\n\n";
         caseNum++;
