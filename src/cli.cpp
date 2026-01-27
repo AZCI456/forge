@@ -216,6 +216,28 @@ static int setup_project(const std::vector<std::string>& command_flags) {
     return 0;
 }
 
+/***
+ * basic function that just runs a quick terminal script to create a REVIEW.MD in the current directory
+ */
+int run_review_command(const std::vector<std::string> & command_flags) {
+
+    // set the command
+    std::string system_command;
+    if (! command_flags.empty() && command_flags[0] == "-v") { // handle subcommands
+        system_command = "cat REVIEW.MD";
+    }
+    else system_command = "cat >> REVIEW.MD";
+
+    // run the command
+    std::cout << "--------------" << std::endl;
+    if (std::system(system_command.c_str()) != 0) {
+       std::cerr << "system operation for REVIEW.MD failed" << std::endl;
+       return -1;
+    }
+    std::cout << "--------------" << std::endl;
+    return 0;
+}
+
 int handle_command(const std::string& command,
                    const std::vector<std::string>& command_flags) {
     if (command == "help" || command == "--help" || command == "-h") {
@@ -229,6 +251,8 @@ int handle_command(const std::string& command,
     if (command == "stress") return run_stress(command_flags);
 
     if (command == "in") return handle_input_tests(command_flags);
+
+    if (command == "review") return run_review_command(command_flags);
 
     if (command == "setup") {
         if (command_flags.empty()) {
