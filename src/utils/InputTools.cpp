@@ -8,6 +8,8 @@
 
 #include <Types.h>
 
+#include "ForgeFunct.h"
+
 
 // Create configuration based on flags
 // No third argument, use Enter key mode
@@ -56,11 +58,30 @@ bool handle_EOF(std::string fileName) {
     return false;
 }
 
+int print_existing_tests() {
+    FolderState state = parse_directory(".",".");
+    std::sort(state.tests.begin(), state.tests.end());
+    for (auto test_file_name : state.tests) {
+        std::cout << "------------------------" << std::endl;
+        std::cout << test_file_name.string()<< ":" << std::endl;
+        // can return -1 in this system run but it wont matter for the execution flow
+        std::system(("cat " + test_file_name.string()).c_str()); // only failure if test case doesn't exist in that case let system fail and move on to next
+    }
+    std::cout << "------------------------" << std::endl;
+
+    return 0;
+}
+
 // Runs the interactive console loop for the Forge Test Creator.
 int handle_input_tests(const std::vector<std::string> & flags) {
     /* note this will start overwriting files if you randomly delete one in your directory
     move to while loop if you want to prevent that from happening (at performance cost
     of parsing your entire directory every single time */
+
+    // see if user wants to print existing tests
+    if (! flags.empty() && flags[0] == "-pt") {
+        return print_existing_tests();
+    }
 
     // first check if "flags" is not empty for short circuiting to prevent a segfault
     bool manual_mode = ! flags.empty() && flags[0] == "-m";

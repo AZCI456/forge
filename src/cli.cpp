@@ -48,8 +48,9 @@ int print_help() {
     std::cout << "  forge test         Run all local .in/.out test cases\n";
     std::cout << "  forge stress       Run the generator stress tester (gen/brute/sol)\n";
     std::cout << "  forge setup <dir>  Create a new project directory with sol.cpp\n";
-    std::cout << "  forge in [-m]      Create sample input/output files quickly\n";
+    std::cout << "  forge in [tag]      Create sample input/output files quickly\n";
     std::cout << "                         -m <optional> explicit command mode\n";
+    std::cout << "                         -pt <optional> print all existing tests\n";
     std::cout << "  forge help         Show this help message\n";
     std::cout << "  forge flags        Show detailed information about flags\n";
 
