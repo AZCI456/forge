@@ -12,10 +12,11 @@ add_executable(forge
         src/planner.cpp
         src/executor.cpp
         src/utils/GeneratorTools.cpp
-        src/utils/InputTools.cpp
-        include/UtilityHeaders/InputTools.h
+        src/utils/FilesystemInputTools.cpp
+        include/UtilityHeaders/FilesystemInputTools.h
         src/utils/ClipboardTools.cpp
         include/UtilityHeaders/ClipboardTools.h
         src/error_messages.cpp
         src/error_messages.h
+        src/utils/UserInputTools.cpp
 )

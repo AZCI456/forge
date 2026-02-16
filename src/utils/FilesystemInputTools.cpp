@@ -1,4 +1,4 @@
-#include "../../include/UtilityHeaders/InputTools.h"
+#include "../../include/UtilityHeaders/FilesystemInputTools.h"
 
 #include <iostream> // cin/cout - get line inherited from istream (parent)
 #include <fstream> // includes iostream but Imma keep it here just for clarity
@@ -79,7 +79,8 @@ int handle_input_tests(const std::vector<std::string> & flags) {
     of parsing your entire directory every single time */
 
     // see if user wants to print existing tests
-    if (! flags.empty() && flags[0] == "-pt") {
+    // TODO: define this as a constant in the configuration file
+    if (! flags.empty() && flags[0] == "-p") {
         return print_existing_tests();
     }
 

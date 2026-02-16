@@ -11,7 +11,8 @@
 
 #include "UtilityHeaders/ClipboardTools.h"
 #include "UtilityHeaders/GeneratorTools.h"
-#include "UtilityHeaders/InputTools.h"
+#include "UtilityHeaders/FilesystemInputTools.h"
+#include "UtilityHeaders/UserInputTools.h"
 
 namespace fs = std::filesystem;
 
@@ -50,7 +51,7 @@ int print_help() {
     std::cout << "  forge setup <dir>  Create a new project directory with sol.cpp\n";
     std::cout << "  forge in [tag]      Create sample input/output files quickly\n";
     std::cout << "                         -m <optional> explicit command mode\n";
-    std::cout << "                         -pt <optional> print all existing tests\n";
+    std::cout << "                         -p <optional> print all existing tests\n";
     std::cout << "  forge help         Show this help message\n";
     std::cout << "  forge flags        Show detailed information about flags\n";
 
@@ -219,13 +220,17 @@ static int setup_project(const std::vector<std::string>& command_flags) {
 
 /***
  * basic function that just runs a quick terminal script to create a REVIEW.MD in the current directory
+ *
+ * for one that you can customised the customised_run_review() function
  */
 int run_review_command(const std::vector<std::string> & command_flags) {
 
     // set the command
     std::string system_command;
     if (! command_flags.empty() && command_flags[0] == "-v") { // handle subcommands
-        system_command = "cat REVIEW.MD";
+        //system_command = "cat REVIEW.MD";
+        printFileContent("REVIEW.MD");
+        return 0;
     }
     else system_command = "cat >> REVIEW.MD";
 
@@ -235,7 +240,37 @@ int run_review_command(const std::vector<std::string> & command_flags) {
        std::cerr << "system operation for REVIEW.MD failed" << std::endl;
        return -1;
     }
+
     std::cout << "--------------" << std::endl;
+
+    return 0;
+}
+
+/**
+ * I built this because I thought that my mac PAC (security kill)
+ * was caused by stale pointers which might have come about when system
+ * was called given that it launches a separate terminal process
+ *
+ * the new function was causing seg faults though so for the time being
+ * I'm shelving it and just using the simpler system command
+ *
+ * @param command_flags
+ * @return
+ */
+int customised_run_review(const std::vector<std::string> & command_flags) {
+
+    std::cout << "--------------" << std::endl;
+
+    // should do config::REVIEW FILE name for program consistency
+    if (! command_flags.empty() && command_flags[0] == "-v") {
+        // handle subcommands
+        return printFileContent("REVIEW.MD");
+    }
+
+    simpleAppend("REVIEW.MD");
+
+    std::cout << "--------------" << std::endl;
+
     return 0;
 }
 
