@@ -1,0 +1,3 @@
+/Users/aaroncoelho-irani/dev/forge/build/CMakeFiles/forge.dir
+/Users/aaroncoelho-irani/dev/forge/build/CMakeFiles/edit_cache.dir
+/Users/aaroncoelho-irani/dev/forge/build/CMakeFiles/rebuild_cache.dir
