@@ -2,7 +2,11 @@
 
 Lightweight CLI competitive programming tool: run tests, stress-test with a generator, set up project dirs, and manage input/output files without the need to handle tons of bash aliases.
 
-Not a super serious proj just built for fun and learning.
+
+## GIF Demo
+![Demo GIF](demo_files/demo.gif)
+
+## Dev Notes
 
 Built on/for mac - issues might arrises where I might've hardcoded commands in std::system calls - lmk if any windows user has a moment to run the compatability issues through cursor/claude and find where the issues lie.
 
@@ -16,8 +20,6 @@ At the time didn't know aliasing was a thing in ~/.zshrc but still I use the too
 
 Note: issues with forge review - process management identifier causing crashes on terminal like when the code calls system it actaully spawns another terminal process which when switching back and forth can cause terminal to crash. Tried implimenting My own native text reader, however it wasn't as smart as the 'cat' Command which Saved at the end of every newline - and it also had bugginess so didn't pursue.
 
-## GIF Demo
-![Demo GIF](demo_files/demo.gif)
 
 
 ## Requirements
