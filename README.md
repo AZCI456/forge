@@ -16,6 +16,10 @@ At the time didn't know aliasing was a thing in ~/.zshrc but still I use the too
 
 Note: issues with forge review - process management identifier causing crashes on terminal like when the code calls system it actaully spawns another terminal process which when switching back and forth can cause terminal to crash. Tried implimenting My own native text reader, however it wasn't as smart as the 'cat' Command which Saved at the end of every newline - and it also had bugginess so didn't pursue.
 
+## GIF Demo
+![Demo GIF](demo_files/demo.gif)
+
+
 ## Requirements
 
 - **CMake** 3.20 or newer  
